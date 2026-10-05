@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/_Host/">
+    <Project Path="src/Spike.API/Spike.API.csproj" Id="ae06096c-a898-4e0c-af0d-7dcbef0838e6" />
+  </Folder>
+  <Folder Name="/__Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+</Solution>
