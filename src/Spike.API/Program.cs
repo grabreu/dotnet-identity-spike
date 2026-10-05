@@ -1,6 +1,7 @@
 using Scalar.AspNetCore;
 using Serilog;
 using Spike.API.OpenApi;
+using Spike.Notifications;
 using Spike.Users;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddOpenApi(options =>
 builder.Services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
 
 builder.Services.AddUsersModuleServices(builder.Configuration);
+builder.Services.AddNotificationsModuleServices();
 
 var app = builder.Build();
 

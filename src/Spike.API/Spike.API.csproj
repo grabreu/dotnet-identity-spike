@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Spike.Notifications\Spike.Notifications.csproj" />
     <ProjectReference Include="..\Spike.Users\Spike.Users.csproj" />
   </ItemGroup>
 

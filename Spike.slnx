@@ -1,5 +1,9 @@
 <Solution>
+  <Folder Name="/Notifications Module/">
+    <Project Path="src/Spike.Notifications/Spike.Notifications.csproj" Id="627c3fe1-2283-43db-b930-9b22fba299ff" />
+  </Folder>
   <Folder Name="/Users Module/">
+    <Project Path="src/Spike.Users.Contracts/Spike.Users.Contracts.csproj" Id="bf2256b7-defa-4d62-924b-ae948b0efdd5" />
     <Project Path="src/Spike.Users/Spike.Users.csproj" Id="a8797312-d295-4fdc-8903-74b8e78ed2d6" />
   </Folder>
   <Folder Name="/_Host/">
