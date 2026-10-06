@@ -1,12 +1,16 @@
 using Scalar.AspNetCore;
-using Serilog;
-using Spike.API.OpenApi;
+using Spike.Api.ExceptionHandling;
+using Spike.Api.OpenApi;
 using Spike.Notifications;
+using Spike.ServiceDefaults;
 using Spike.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+builder.AddServiceDefaults();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddOpenApi(options =>
 {
@@ -15,14 +19,19 @@ builder.Services.AddOpenApi(options =>
     options.AddOperationTransformer<BearerSecuritySchemeTransformer>();
 });
 
-builder.Services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
+builder.Services.AddMediator(options =>
+{
+    options.ServiceLifetime = ServiceLifetime.Scoped;
+});
 
-builder.Services.AddUsersModuleServices(builder.Configuration);
-builder.Services.AddNotificationsModuleServices();
+builder.AddUsersModuleServices();
+builder.AddNotificationsModuleServices();
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging();
+app.UseExceptionHandler();
+
+app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

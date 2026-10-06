@@ -25,14 +25,14 @@ public class TokenService(UserManager<IdentityUser> userManager, IOptions<JwtOpt
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.SecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var expiresAt = DateTime.UtcNow.AddMinutes(_jwt.AccessTokenExpirationMinutes);
+        var expiresAt = DateTimeOffset.UtcNow.AddMinutes(_jwt.AccessTokenExpirationMinutes);
 
         var descriptor = new SecurityTokenDescriptor
         {
             Subject = subject,
             Issuer = _jwt.Issuer,
             Audience = _jwt.Audience,
-            Expires = expiresAt,
+            Expires = expiresAt.UtcDateTime,
             SigningCredentials = credentials,
         };
 

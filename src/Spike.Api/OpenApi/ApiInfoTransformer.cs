@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
-namespace Spike.API.OpenApi;
+namespace Spike.Api.OpenApi;
 
 public class ApiInfoTransformer : IOpenApiDocumentTransformer
 {

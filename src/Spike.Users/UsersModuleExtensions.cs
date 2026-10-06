@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spike.Users.Application.Abstractions.Identity;
@@ -20,11 +18,11 @@ namespace Spike.Users;
 
 public static class UsersModuleExtensions
 {
-    public static IServiceCollection AddUsersModuleServices(this IServiceCollection services, IConfiguration configuration)
+    public static IHostApplicationBuilder AddUsersModuleServices(this IHostApplicationBuilder builder)
     {
-        services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("UsersDb")));
+        builder.AddSqlServerDbContext<UsersDbContext>("UsersDb");
 
-        services.AddIdentityCore<IdentityUser>(options =>
+        builder.Services.AddIdentityCore<IdentityUser>(options =>
         {
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
@@ -36,20 +34,18 @@ public static class UsersModuleExtensions
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<UsersDbContext>();
 
-        services.AddOptions<JwtOptions>()
+        builder.Services.AddOptions<JwtOptions>()
             .BindConfiguration(JwtOptions.SectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+        builder.Services.AddAuthorization();
+        builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
 
-        services.ConfigureOptions<ConfigureJwtBearerOptions>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
 
-        services.AddAuthorization();
-
-        services.AddScoped<ITokenService, TokenService>();
-
-        return services;
+        return builder;
     }
 
     public static async Task InitializeUsersModuleAsync(this IHost app)

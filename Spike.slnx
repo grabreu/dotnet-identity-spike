@@ -7,9 +7,12 @@
     <Project Path="src/Spike.Users/Spike.Users.csproj" Id="a8797312-d295-4fdc-8903-74b8e78ed2d6" />
   </Folder>
   <Folder Name="/_Host/">
-    <Project Path="src/Spike.API/Spike.API.csproj" Id="ae06096c-a898-4e0c-af0d-7dcbef0838e6" />
+    <Project Path="src/Spike.AppHost/Spike.AppHost.csproj" />
+    <Project Path="src/Spike.ServiceDefaults/Spike.ServiceDefaults.csproj" />
+    <Project Path="src/Spike.Api/Spike.Api.csproj" Id="ae06096c-a898-4e0c-af0d-7dcbef0838e6" />
   </Folder>
   <Folder Name="/__Solution Items/">
+    <File Path="global.json" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
     <File Path=".editorconfig" />

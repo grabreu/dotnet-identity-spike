@@ -1,11 +1,11 @@
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Spike.Notifications;
 
 public static class NotificationsModuleExtensions
 {
-    public static IServiceCollection AddNotificationsModuleServices(this IServiceCollection services)
+    public static IHostApplicationBuilder AddNotificationsModuleServices(this IHostApplicationBuilder builder)
     {
-        return services;
+        return builder;
     }
 }
