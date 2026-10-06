@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text;
 using Desfecho.AspNetCore;
 using Mediator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Spike.Users.Application.Abstractions.Identity;
 using Spike.Users.Application.UseCases.Commands.Login;
 using Spike.Users.Application.UseCases.Commands.Register;
@@ -20,37 +23,11 @@ public static class UsersModuleExtensions
 {
     public static IHostApplicationBuilder AddUsersModuleServices(this IHostApplicationBuilder builder)
     {
-        builder.AddSqlServerDbContext<UsersDbContext>("UsersDb");
-
-        builder.Services.AddIdentityCore<IdentityUser>(options =>
-        {
-            options.Password.RequireDigit = true;
-            options.Password.RequireLowercase = true;
-            options.Password.RequireUppercase = true;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequiredLength = 6;
-            options.User.RequireUniqueEmail = true;
-        })
-        .AddRoles<IdentityRole>()
-        .AddEntityFrameworkStores<UsersDbContext>();
-
-        builder.Services.AddOptions<JwtOptions>()
-            .BindConfiguration(JwtOptions.SectionName)
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
-
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
-        builder.Services.AddAuthorization();
-        builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
-
-        builder.Services.AddScoped<ITokenService, TokenService>();
+        builder.AddUsersPersistence()
+            .AddUsersIdentity()
+            .AddUsersJwtAuthentication();
 
         return builder;
-    }
-
-    public static async Task InitializeUsersModuleAsync(this IHost app)
-    {
-        await UsersDbSeeder.SeedAsync(app.Services);
     }
 
     public static IEndpointRouteBuilder MapUsersModuleEndpoints(this IEndpointRouteBuilder app)
@@ -81,5 +58,67 @@ public static class UsersModuleExtensions
         .WithName("GetCurrentUser");
 
         return app;
+    }
+
+    public static async Task EnsureUsersModuleDatabaseAsync(this IHost app)
+    {
+        await UsersDbSeeder.SeedAsync(app.Services);
+    }
+
+    private static IHostApplicationBuilder AddUsersPersistence(this IHostApplicationBuilder builder)
+    {
+        builder.AddSqlServerDbContext<UsersDbContext>("UsersDb");
+
+        return builder;
+    }
+
+    private static IHostApplicationBuilder AddUsersIdentity(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddIdentityCore<IdentityUser>(options =>
+        {
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequiredLength = 6;
+            options.User.RequireUniqueEmail = true;
+        })
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<UsersDbContext>();
+
+        return builder;
+    }
+
+    private static IHostApplicationBuilder AddUsersJwtAuthentication(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddOptions<JwtOptions>()
+            .BindConfiguration(JwtOptions.SectionName)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+        builder.Services.AddAuthorization();
+
+        builder.Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+            .Configure<IOptions<JwtOptions>>((bearer, jwtOptions) =>
+            {
+                var jwt = jwtOptions.Value;
+
+                bearer.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwt.Issuer,
+                    ValidAudience = jwt.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey)),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+        builder.Services.AddScoped<ITokenService, TokenService>();
+
+        return builder;
     }
 }

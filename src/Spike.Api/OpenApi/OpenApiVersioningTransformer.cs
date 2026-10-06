@@ -3,7 +3,7 @@ using Microsoft.OpenApi;
 
 namespace Spike.Api.OpenApi;
 
-public class ApiInfoTransformer : IOpenApiDocumentTransformer
+public class OpenApiVersioningTransformer : IOpenApiDocumentTransformer
 {
     public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
     {

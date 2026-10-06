@@ -14,7 +14,7 @@ builder.Services.AddProblemDetails();
 
 builder.Services.AddOpenApi(options =>
 {
-    options.AddDocumentTransformer<ApiInfoTransformer>();
+    options.AddDocumentTransformer<OpenApiVersioningTransformer>();
     options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
     options.AddOperationTransformer<BearerSecuritySchemeTransformer>();
 });
@@ -43,7 +43,7 @@ app.MapUsersModuleEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
-    await app.InitializeUsersModuleAsync();
+    await app.EnsureUsersModuleDatabaseAsync();
 }
 
 await app.RunAsync();
