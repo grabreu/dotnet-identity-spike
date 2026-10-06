@@ -37,7 +37,8 @@ public static class LoginEndpoint
         })
         .WithName("Login")
         .WithTags("Auth")
-        .WithSummary("Authenticates a user and returns an access token.")
+        .WithSummary("Log in")
+        .WithDescription("Authenticates a user and returns an access token.")
         .Produces<TokenResponse>()
         .ProducesProblem(StatusCodes.Status401Unauthorized);
 

@@ -17,7 +17,8 @@ public static class ProfileEndpoint
         })
         .WithName("Profile")
         .WithTags("Users")
-        .WithSummary("Returns the authenticated user's profile.")
+        .WithSummary("Get profile")
+        .WithDescription("Returns the authenticated user's profile.")
         .ProducesProblem(StatusCodes.Status401Unauthorized)
         .RequireAuthorization();
 

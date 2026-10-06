@@ -35,6 +35,11 @@ public static class UsersModuleExtensions
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
+        builder.Services.AddOptions<GoogleOptions>()
+            .BindConfiguration(GoogleOptions.SectionName)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
         builder.Services.AddAuthorization();
 
@@ -66,6 +71,7 @@ public static class UsersModuleExtensions
         app.MapRegister();
         app.MapLogin();
         app.MapProfile();
+        app.MapGoogleLogin();
 
         return app;
     }

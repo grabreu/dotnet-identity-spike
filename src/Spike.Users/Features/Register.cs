@@ -46,7 +46,8 @@ public static class RegisterEndpoint
         })
         .WithName("Register")
         .WithTags("Auth")
-        .WithSummary("Registers a new user and returns an access token.")
+        .WithSummary("Register user")
+        .WithDescription("Registers a new user and returns an access token.")
         .Produces<TokenResponse>()
         .ProducesValidationProblem();
 
