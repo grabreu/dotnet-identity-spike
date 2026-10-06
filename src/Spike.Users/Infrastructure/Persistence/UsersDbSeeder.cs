@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Spike.Users.Infrastructure.Persistence;
 
@@ -13,15 +12,14 @@ internal static class UsersDbSeeder
         var context = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<UsersDbContext>>();
 
         await context.Database.MigrateAsync();
 
-        await SeedRolesAsync(roleManager, logger);
-        await SeedAdminUserAsync(userManager, logger);
+        await SeedRolesAsync(roleManager);
+        await SeedAdminUserAsync(userManager);
     }
 
-    private static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager, ILogger logger)
+    private static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
     {
         string[] roles = ["Admin"];
 
@@ -30,12 +28,11 @@ internal static class UsersDbSeeder
             if (!await roleManager.RoleExistsAsync(role))
             {
                 await roleManager.CreateAsync(new IdentityRole(role));
-                logger.LogInformation("{Role} role seeded successfully", role);
             }
         }
     }
 
-    private static async Task SeedAdminUserAsync(UserManager<IdentityUser> userManager, ILogger logger)
+    private static async Task SeedAdminUserAsync(UserManager<IdentityUser> userManager)
     {
         const string adminEmail = "admin@spike.dev";
 
@@ -53,7 +50,5 @@ internal static class UsersDbSeeder
 
         await userManager.CreateAsync(admin, "Admin@123");
         await userManager.AddToRoleAsync(admin, "Admin");
-
-        logger.LogInformation("{Email} admin user seeded successfully", adminEmail);
     }
 }
