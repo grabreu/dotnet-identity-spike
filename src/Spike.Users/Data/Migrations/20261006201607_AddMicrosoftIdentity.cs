@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Spike.Users.Data.Migrations;
 
 /// <inheritdoc />
-public partial class AddAspNetIdentity : Migration
+public partial class AddMicrosoftIdentity : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,26 +14,13 @@ public partial class AddAspNetIdentity : Migration
             name: "Users");
 
         migrationBuilder.CreateTable(
-            name: "AspNetRoles",
-            schema: "Users",
-            columns: table => new
-            {
-                Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
-            },
-            constraints: table =>
-            {
-                table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-            });
-
-        migrationBuilder.CreateTable(
             name: "AspNetUsers",
             schema: "Users",
             columns: table => new
             {
-                Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                DisplayName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                OnboardedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                 UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                 NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                 Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -55,36 +42,13 @@ public partial class AddAspNetIdentity : Migration
             });
 
         migrationBuilder.CreateTable(
-            name: "AspNetRoleClaims",
-            schema: "Users",
-            columns: table => new
-            {
-                Id = table.Column<int>(type: "int", nullable: false)
-                    .Annotation("SqlServer:Identity", "1, 1"),
-                RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-            },
-            constraints: table =>
-            {
-                table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
-                table.ForeignKey(
-                    name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                    column: x => x.RoleId,
-                    principalSchema: "Users",
-                    principalTable: "AspNetRoles",
-                    principalColumn: "Id",
-                    onDelete: ReferentialAction.Cascade);
-            });
-
-        migrationBuilder.CreateTable(
             name: "AspNetUserClaims",
             schema: "Users",
             columns: table => new
             {
                 Id = table.Column<int>(type: "int", nullable: false)
                     .Annotation("SqlServer:Identity", "1, 1"),
-                UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                 ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
             },
@@ -108,7 +72,7 @@ public partial class AddAspNetIdentity : Migration
                 LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                 ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                 ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
             },
             constraints: table =>
             {
@@ -123,38 +87,11 @@ public partial class AddAspNetIdentity : Migration
             });
 
         migrationBuilder.CreateTable(
-            name: "AspNetUserRoles",
-            schema: "Users",
-            columns: table => new
-            {
-                UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-            },
-            constraints: table =>
-            {
-                table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
-                table.ForeignKey(
-                    name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                    column: x => x.RoleId,
-                    principalSchema: "Users",
-                    principalTable: "AspNetRoles",
-                    principalColumn: "Id",
-                    onDelete: ReferentialAction.Cascade);
-                table.ForeignKey(
-                    name: "FK_AspNetUserRoles_AspNetUsers_UserId",
-                    column: x => x.UserId,
-                    principalSchema: "Users",
-                    principalTable: "AspNetUsers",
-                    principalColumn: "Id",
-                    onDelete: ReferentialAction.Cascade);
-            });
-
-        migrationBuilder.CreateTable(
             name: "AspNetUserTokens",
             schema: "Users",
             columns: table => new
             {
-                UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                 LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                 Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                 Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -172,20 +109,6 @@ public partial class AddAspNetIdentity : Migration
             });
 
         migrationBuilder.CreateIndex(
-            name: "IX_AspNetRoleClaims_RoleId",
-            schema: "Users",
-            table: "AspNetRoleClaims",
-            column: "RoleId");
-
-        migrationBuilder.CreateIndex(
-            name: "RoleNameIndex",
-            schema: "Users",
-            table: "AspNetRoles",
-            column: "NormalizedName",
-            unique: true,
-            filter: "[NormalizedName] IS NOT NULL");
-
-        migrationBuilder.CreateIndex(
             name: "IX_AspNetUserClaims_UserId",
             schema: "Users",
             table: "AspNetUserClaims",
@@ -196,12 +119,6 @@ public partial class AddAspNetIdentity : Migration
             schema: "Users",
             table: "AspNetUserLogins",
             column: "UserId");
-
-        migrationBuilder.CreateIndex(
-            name: "IX_AspNetUserRoles_RoleId",
-            schema: "Users",
-            table: "AspNetUserRoles",
-            column: "RoleId");
 
         migrationBuilder.CreateIndex(
             name: "EmailIndex",
@@ -222,10 +139,6 @@ public partial class AddAspNetIdentity : Migration
     protected override void Down(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.DropTable(
-            name: "AspNetRoleClaims",
-            schema: "Users");
-
-        migrationBuilder.DropTable(
             name: "AspNetUserClaims",
             schema: "Users");
 
@@ -234,15 +147,7 @@ public partial class AddAspNetIdentity : Migration
             schema: "Users");
 
         migrationBuilder.DropTable(
-            name: "AspNetUserRoles",
-            schema: "Users");
-
-        migrationBuilder.DropTable(
             name: "AspNetUserTokens",
-            schema: "Users");
-
-        migrationBuilder.DropTable(
-            name: "AspNetRoles",
             schema: "Users");
 
         migrationBuilder.DropTable(
