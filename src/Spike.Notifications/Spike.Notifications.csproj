@@ -5,6 +5,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Spike.Users.Contracts\Spike.Users.Contracts.csproj" />
   </ItemGroup>
 
