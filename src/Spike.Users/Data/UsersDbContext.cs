@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Spike.Users.Infrastructure.Persistence;
+namespace Spike.Users.Data;
 
 public class UsersDbContext(DbContextOptions<UsersDbContext> options) : IdentityDbContext(options)
 {

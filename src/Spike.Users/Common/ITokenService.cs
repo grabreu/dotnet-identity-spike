@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Spike.Users.Application.Abstractions.Identity;
+namespace Spike.Users.Common;
 
 public interface ITokenService
 {

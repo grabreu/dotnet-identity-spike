@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using Spike.Users.Application.Abstractions.Identity;
 
-namespace Spike.Users.Infrastructure.Identity;
+namespace Spike.Users.Common;
 
 public class TokenService(UserManager<IdentityUser> userManager, IOptions<JwtOptions> options) : ITokenService
 {

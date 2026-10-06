@@ -2,9 +2,8 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Spike.Notifications.Application.Abstractions;
 
-namespace Spike.Notifications.Infrastructure.Email;
+namespace Spike.Notifications.Email;
 
 public class SmtpEmailService(IOptions<EmailOptions> options) : IEmailService
 {

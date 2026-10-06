@@ -1,21 +1,14 @@
-using System.Security.Claims;
 using System.Text;
-using Desfecho.AspNetCore;
-using Mediator;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Spike.Users.Application.Abstractions.Identity;
-using Spike.Users.Application.UseCases.Commands.Login;
-using Spike.Users.Application.UseCases.Commands.Register;
-using Spike.Users.Infrastructure.Identity;
-using Spike.Users.Infrastructure.Persistence;
+using Spike.Users.Common;
+using Spike.Users.Data;
+using Spike.Users.Features;
 
 namespace Spike.Users;
 
@@ -23,57 +16,8 @@ public static class UsersModuleExtensions
 {
     public static IHostApplicationBuilder AddUsersModuleServices(this IHostApplicationBuilder builder)
     {
-        builder.AddUsersPersistence()
-            .AddUsersIdentity()
-            .AddUsersJwtAuthentication();
-
-        return builder;
-    }
-
-    public static IEndpointRouteBuilder MapUsersModuleEndpoints(this IEndpointRouteBuilder app)
-    {
-        var group = app.MapGroup("/identity")
-            .WithTags("Identity");
-
-        group.MapPost("/register", async (RegisterCommand command, ISender sender, CancellationToken cancellationToken) =>
-        {
-            var result = await sender.Send(command, cancellationToken);
-            return result.ToOk();
-        })
-        .WithName("Register");
-
-        group.MapPost("/login", async (LoginCommand command, ISender sender, CancellationToken cancellationToken) =>
-        {
-            var result = await sender.Send(command, cancellationToken);
-            return result.ToOk();
-        })
-        .WithName("Login");
-
-        group.MapGet("/me", (ClaimsPrincipal user) => Results.Ok(new
-        {
-            Id = user.FindFirstValue(ClaimTypes.NameIdentifier),
-            Email = user.FindFirstValue(ClaimTypes.Email)
-        }))
-        .RequireAuthorization()
-        .WithName("GetCurrentUser");
-
-        return app;
-    }
-
-    public static async Task EnsureUsersModuleDatabaseAsync(this IHost app)
-    {
-        await UsersDbSeeder.SeedAsync(app.Services);
-    }
-
-    private static IHostApplicationBuilder AddUsersPersistence(this IHostApplicationBuilder builder)
-    {
         builder.AddSqlServerDbContext<UsersDbContext>("UsersDb");
 
-        return builder;
-    }
-
-    private static IHostApplicationBuilder AddUsersIdentity(this IHostApplicationBuilder builder)
-    {
         builder.Services.AddIdentityCore<IdentityUser>(options =>
         {
             options.Password.RequireDigit = true;
@@ -86,11 +30,6 @@ public static class UsersModuleExtensions
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<UsersDbContext>();
 
-        return builder;
-    }
-
-    private static IHostApplicationBuilder AddUsersJwtAuthentication(this IHostApplicationBuilder builder)
-    {
         builder.Services.AddOptions<JwtOptions>()
             .BindConfiguration(JwtOptions.SectionName)
             .ValidateDataAnnotations()
@@ -120,5 +59,19 @@ public static class UsersModuleExtensions
         builder.Services.AddScoped<ITokenService, TokenService>();
 
         return builder;
+    }
+
+    public static IEndpointRouteBuilder MapUsersModuleEndpoints(this IEndpointRouteBuilder app)
+    {
+        app.MapRegister();
+        app.MapLogin();
+        app.MapProfile();
+
+        return app;
+    }
+
+    public static async Task EnsureUsersModuleDatabaseAsync(this IHost app)
+    {
+        await UsersDbSeeder.SeedAsync(app.Services);
     }
 }

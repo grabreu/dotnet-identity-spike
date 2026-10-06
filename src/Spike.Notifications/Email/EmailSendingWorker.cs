@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Spike.Notifications.Application.Abstractions;
 
-namespace Spike.Notifications.Infrastructure.Email;
+namespace Spike.Notifications.Email;
 
 public class EmailSendingWorker(ChannelEmailQueue queue, IEmailService emailService, ILogger<EmailSendingWorker> logger) : BackgroundService
 {

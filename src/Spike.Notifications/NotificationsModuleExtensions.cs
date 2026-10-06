@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Spike.Notifications.Application.Abstractions;
-using Spike.Notifications.Infrastructure.Email;
+using Spike.Notifications.Email;
 
 namespace Spike.Notifications;
 

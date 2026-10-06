@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Spike.Users.Infrastructure.Identity;
+namespace Spike.Users.Common;
 
 public class JwtOptions
 {

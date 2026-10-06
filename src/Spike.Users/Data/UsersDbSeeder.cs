@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Spike.Users.Infrastructure.Persistence;
+namespace Spike.Users.Data;
 
 internal static class UsersDbSeeder
 {

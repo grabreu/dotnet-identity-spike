@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Spike.Users.Infrastructure.Data.Migrations;
+namespace Spike.Users.Data.Migrations;
 
 /// <inheritdoc />
 public partial class InitialCreate : Migration

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Spike.Users.Infrastructure.Persistence;
+using Spike.Users.Data;
 
 #nullable disable
 
-namespace Spike.Users.Infrastructure.Data.Migrations
+namespace Spike.Users.Data.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
     [Migration("20261005195319_InitialCreate")]

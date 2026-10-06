@@ -1,8 +1,8 @@
 using Mediator;
-using Spike.Notifications.Application.Abstractions;
+using Spike.Notifications.Email;
 using Spike.Users.Contracts.Events;
 
-namespace Spike.Notifications.Application.EventHandlers;
+namespace Spike.Notifications.Integrations;
 
 public class UserRegisteredEventHandler(IEmailQueue emailQueue) : INotificationHandler<UserRegisteredEvent>
 {

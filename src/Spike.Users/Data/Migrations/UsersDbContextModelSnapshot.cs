@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Spike.Users.Infrastructure.Persistence;
+using Spike.Users.Data;
 
 #nullable disable
 
-namespace Spike.Users.Infrastructure.Data.Migrations
+namespace Spike.Users.Data.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20261005195336_AddAspNetIdentity")]
-    partial class AddAspNetIdentity
+    partial class UsersDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

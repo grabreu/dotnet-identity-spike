@@ -1,4 +1,4 @@
-namespace Spike.Notifications.Application.Abstractions;
+namespace Spike.Notifications.Email;
 
 public interface IEmailQueue
 {

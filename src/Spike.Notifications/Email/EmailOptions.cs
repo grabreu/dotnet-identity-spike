@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Spike.Notifications.Infrastructure.Email;
+namespace Spike.Notifications.Email;
 
 public class EmailOptions
 {
