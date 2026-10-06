@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -20,23 +21,12 @@ public static class UsersModuleExtensions
 
         builder.Services.AddIdentityCore<IdentityUser>(options =>
         {
-            options.Password.RequireDigit = true;
-            options.Password.RequireLowercase = true;
-            options.Password.RequireUppercase = true;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequiredLength = 6;
             options.User.RequireUniqueEmail = true;
         })
-        .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<UsersDbContext>();
 
         builder.Services.AddOptions<JwtOptions>()
             .BindConfiguration(JwtOptions.SectionName)
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
-
-        builder.Services.AddOptions<GoogleOptions>()
-            .BindConfiguration(GoogleOptions.SectionName)
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
@@ -68,16 +58,17 @@ public static class UsersModuleExtensions
 
     public static IEndpointRouteBuilder MapUsersModuleEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapRegister();
-        app.MapLogin();
         app.MapProfile();
-        app.MapGoogleLogin();
 
         return app;
     }
 
     public static async Task EnsureUsersModuleDatabaseAsync(this IHost app)
     {
-        await UsersDbSeeder.SeedAsync(app.Services);
+        using var scope = app.Services.CreateScope();
+
+        var context = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
+
+        await context.Database.MigrateAsync();
     }
 }
