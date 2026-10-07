@@ -1,14 +1,35 @@
-namespace Spike.Users.Features;
+using Spike.Users.Common;
 
-public record TokenDto(string AccessToken);
+namespace Spike.Users.Features;
 
 public record CompleteEmailSignInCommand(string Email, string Code) : ICommand<Result<TokenDto>>;
 
-public class CompleteEmailSignInHandler : ICommandHandler<CompleteEmailSignInCommand, Result<TokenDto>>
+public class CompleteEmailSignInHandler(UserManager<ApplicationUser> userManager, ITokenService tokenService) : ICommandHandler<CompleteEmailSignInCommand, Result<TokenDto>>
 {
-    public ValueTask<Result<TokenDto>> Handle(CompleteEmailSignInCommand command, CancellationToken cancellationToken)
+    private const string Purpose = "PasswordlessLogin";
+
+    public async ValueTask<Result<TokenDto>> Handle(CompleteEmailSignInCommand command, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var user = await userManager.FindByEmailAsync(command.Email);
+
+        if (user is null || !await userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultEmailProvider, Purpose, command.Code))
+        {
+            return Result.Unauthorized("Invalid or expired code.");
+        }
+
+        if (!user.EmailConfirmed)
+        {
+            user.EmailConfirmed = true;
+
+            var updateResult = await userManager.UpdateAsync(user);
+
+            if (!updateResult.Succeeded)
+            {
+                return updateResult.ToErrors();
+            }
+        }
+
+        return tokenService.GenerateToken(user);
     }
 }
 
@@ -21,10 +42,10 @@ public static class CompleteEmailSignInEndpoint
         return endpoints
             .MapPost("/auth/email/sign-in/complete", HandleAsync)
             .AllowAnonymous()
+            .WithTags("Authentication")
             .WithName("CompleteEmailSignIn")
-            .WithDisplayName("Complete Email Sign-In")
-            .WithSummary("Completes the email sign-in process for a user.")
-            .WithDescription("This endpoint completes the email sign-in process for a user by verifying the provided code.")
+            .WithSummary("Complete Email Sign-In")
+            .WithDescription("Completes the email sign-in process using a verification code.")
             .Produces<TokenDto>(StatusCodes.Status200OK);
     }
 

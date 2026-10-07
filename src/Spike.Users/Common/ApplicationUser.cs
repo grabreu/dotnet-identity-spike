@@ -1,4 +1,4 @@
-namespace Spike.Users.Models;
+namespace Spike.Users.Common;
 
 public class ApplicationUser : IdentityUser<Guid>
 {

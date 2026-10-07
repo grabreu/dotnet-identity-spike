@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi;
-
 namespace Spike.Api.OpenApi;
 
 public class OpenApiVersioningTransformer : IOpenApiDocumentTransformer
@@ -11,7 +8,12 @@ public class OpenApiVersioningTransformer : IOpenApiDocumentTransformer
         {
             Title = "Spike API",
             Version = "v1",
-            Description = "Spike exploring ASP.NET Core Identity + JWT authentication in a .NET minimal API."
+            Description = "Spike exploring ASP.NET Core Identity + JWT authentication in a .NET minimal API.",
+            Contact = new OpenApiContact
+            {
+                Name = "Gabriel Abreu",
+                Url = new Uri("https://grabreu.dev")
+            }
         };
 
         return Task.CompletedTask;

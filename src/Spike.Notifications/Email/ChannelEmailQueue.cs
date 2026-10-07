@@ -1,5 +1,3 @@
-using System.Threading.Channels;
-
 namespace Spike.Notifications.Email;
 
 public class ChannelEmailQueue : IEmailQueue

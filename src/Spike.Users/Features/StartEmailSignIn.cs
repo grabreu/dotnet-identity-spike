@@ -1,12 +1,39 @@
+using Spike.Users.Common;
+using Spike.Users.Contracts.Events;
+
 namespace Spike.Users.Features;
 
 public record StartEmailSignInCommand(string Email) : ICommand<Result>;
 
-public class StartEmailSignInHandler : ICommandHandler<StartEmailSignInCommand, Result>
+public class StartEmailSignInHandler(UserManager<ApplicationUser> userManager, IPublisher publisher) : ICommandHandler<StartEmailSignInCommand, Result>
 {
-    public ValueTask<Result> Handle(StartEmailSignInCommand command, CancellationToken cancellationToken)
+    private const string Purpose = "PasswordlessLogin";
+
+    public async ValueTask<Result> Handle(StartEmailSignInCommand command, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var user = await userManager.FindByEmailAsync(command.Email);
+
+        if (user is null)
+        {
+            user = new ApplicationUser
+            {
+                UserName = command.Email,
+                Email = command.Email
+            };
+
+            var createResult = await userManager.CreateAsync(user);
+
+            if (!createResult.Succeeded)
+            {
+                return createResult.ToErrors();
+            }
+        }
+
+        var code = await userManager.GenerateUserTokenAsync(user, TokenOptions.DefaultEmailProvider, Purpose);
+
+        await publisher.Publish(new EmailSignInStartedEvent(user.Email!, code), cancellationToken);
+
+        return Result.Success();
     }
 }
 
@@ -19,10 +46,10 @@ public static class StartEmailSignInEndpoint
         return endpoints
             .MapPost("/auth/email/sign-in", HandleAsync)
             .AllowAnonymous()
+            .WithTags("Authentication")
             .WithName("StartEmailSignIn")
-            .WithDisplayName("Start Email Sign-In")
-            .WithSummary("Initiates the email sign-in process for a user.")
-            .WithDescription("This endpoint initiates the email sign-in process for a user by sending a verification email.")
+            .WithSummary("Start Email Sign-In")
+            .WithDescription("Initiates the email sign-in process for a user.")
             .Produces(StatusCodes.Status204NoContent);
     }
 

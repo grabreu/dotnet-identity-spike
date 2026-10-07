@@ -1,4 +1,4 @@
-using Spike.Users.Models;
+using Spike.Users.Common;
 
 namespace Spike.Users.Data;
 

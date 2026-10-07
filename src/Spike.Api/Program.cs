@@ -1,4 +1,3 @@
-using Scalar.AspNetCore;
 using Spike.Api.ExceptionHandling;
 using Spike.Api.OpenApi;
 using Spike.Notifications;
