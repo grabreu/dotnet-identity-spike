@@ -22,15 +22,18 @@ public class ValidationBehaviorTests
     [Fact]
     public async Task WithoutValidatorsCallsNextAndReturnsItsResponse()
     {
+        // Arrange
         var behavior = new ValidationBehavior<TestCommand, Result>([]);
         var nextCalled = false;
 
+        // Act
         var result = await behavior.Handle(new TestCommand("", 0), (_, _) =>
         {
             nextCalled = true;
             return ValueTask.FromResult(Result.Success());
         }, CancellationToken.None);
 
+        // Assert
         nextCalled.ShouldBeTrue();
         result.IsSuccess.ShouldBeTrue();
     }
@@ -38,15 +41,18 @@ public class ValidationBehaviorTests
     [Fact]
     public async Task ValidMessageCallsNextAndReturnsItsResponse()
     {
+        // Arrange
         var behavior = new ValidationBehavior<TestCommand, Result>([NameRequiredValidator()]);
         var nextCalled = false;
 
+        // Act
         var result = await behavior.Handle(new TestCommand("Ana", 30), (_, _) =>
         {
             nextCalled = true;
             return ValueTask.FromResult(Result.Success());
         }, CancellationToken.None);
 
+        // Assert
         nextCalled.ShouldBeTrue();
         result.IsSuccess.ShouldBeTrue();
     }
@@ -54,15 +60,18 @@ public class ValidationBehaviorTests
     [Fact]
     public async Task InvalidMessageReturnsValidationErrorsWithoutCallingNext()
     {
+        // Arrange
         var behavior = new ValidationBehavior<TestCommand, Result>([NameRequiredValidator()]);
         var nextCalled = false;
 
+        // Act
         var result = await behavior.Handle(new TestCommand("", 30), (_, _) =>
         {
             nextCalled = true;
             return ValueTask.FromResult(Result.Success());
         }, CancellationToken.None);
 
+        // Assert
         nextCalled.ShouldBeFalse();
         result.IsError.ShouldBeTrue();
         result.Errors.Count.ShouldBe(1);
@@ -73,17 +82,20 @@ public class ValidationBehaviorTests
     [Fact]
     public async Task InvalidMessageReturnsValidationErrorsForGenericResult()
     {
+        // Arrange
         var validator = new InlineValidator<TestGenericCommand>();
         validator.RuleFor(x => x.Name).NotEmpty();
         var behavior = new ValidationBehavior<TestGenericCommand, Result<string>>([validator]);
         var nextCalled = false;
 
+        // Act
         var result = await behavior.Handle(new TestGenericCommand(""), (_, _) =>
         {
             nextCalled = true;
             return ValueTask.FromResult(Result.Success("ok"));
         }, CancellationToken.None);
 
+        // Assert
         nextCalled.ShouldBeFalse();
         result.IsError.ShouldBeTrue();
         result.Errors.Single().Property.ShouldBe("Name");
@@ -92,13 +104,16 @@ public class ValidationBehaviorTests
     [Fact]
     public async Task FailuresFromAllValidatorsAreReported()
     {
+        // Arrange
         var nameValidator = NameRequiredValidator();
         var ageValidator = new InlineValidator<TestCommand>();
         ageValidator.RuleFor(x => x.Age).GreaterThan(0);
         var behavior = new ValidationBehavior<TestCommand, Result>([nameValidator, ageValidator]);
 
+        // Act
         var result = await behavior.Handle(new TestCommand("", 0), (_, _) => ValueTask.FromResult(Result.Success()), CancellationToken.None);
 
+        // Assert
         result.IsError.ShouldBeTrue();
         result.Errors.Select(error => error.Property).ShouldBe(["Name", "Age"], ignoreOrder: true);
     }
