@@ -32,7 +32,9 @@ public static class GetCurrentUserEndpoint
             .WithName("GetCurrentUser")
             .WithSummary("Get Current User")
             .WithDescription("Retrieves the currently authenticated user.")
-            .Produces<CurrentUserDto>(StatusCodes.Status200OK);
+            .Produces<CurrentUserDto>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound);
     }
 
     private static ValueTask<IResult> HandleAsync(ClaimsPrincipal principal, ISender sender, CancellationToken cancellationToken)

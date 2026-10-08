@@ -6,27 +6,31 @@ public record CompleteEmailSignInCommand(string Email, string Code) : ICommand<R
 
 public class CompleteEmailSignInHandler(UserManager<ApplicationUser> userManager, ITokenService tokenService) : ICommandHandler<CompleteEmailSignInCommand, Result<TokenDto>>
 {
-    private const string Purpose = "PasswordlessLogin";
-
     public async ValueTask<Result<TokenDto>> Handle(CompleteEmailSignInCommand command, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByEmailAsync(command.Email);
 
-        if (user is null || !await userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultEmailProvider, Purpose, command.Code))
+        if (user is null || await userManager.IsLockedOutAsync(user))
         {
             return Result.Unauthorized("Invalid or expired code.");
         }
 
-        if (!user.EmailConfirmed)
+        if (!await userManager.VerifyUserTokenAsync(user, TokenOptions.DefaultEmailProvider, StartEmailSignInHandler.Purpose, command.Code))
         {
-            user.EmailConfirmed = true;
+            await userManager.AccessFailedAsync(user);
 
-            var updateResult = await userManager.UpdateAsync(user);
+            return Result.Unauthorized("Invalid or expired code.");
+        }
 
-            if (!updateResult.Succeeded)
-            {
-                return updateResult.ToErrors();
-            }
+        await userManager.ResetAccessFailedCountAsync(user);
+
+        user.EmailConfirmed = true;
+
+        var stampResult = await userManager.UpdateSecurityStampAsync(user);
+
+        if (!stampResult.Succeeded)
+        {
+            return Result.Unauthorized("Invalid or expired code.");
         }
 
         return tokenService.GenerateToken(user);
@@ -46,7 +50,9 @@ public static class CompleteEmailSignInEndpoint
             .WithName("CompleteEmailSignIn")
             .WithSummary("Complete Email Sign-In")
             .WithDescription("Completes the email sign-in process using a verification code.")
-            .Produces<TokenDto>(StatusCodes.Status200OK);
+            .Produces<TokenDto>(StatusCodes.Status200OK)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
     }
 
     private static ValueTask<IResult> HandleAsync(CompleteEmailSignInRequest request, ISender sender, CancellationToken cancellationToken)

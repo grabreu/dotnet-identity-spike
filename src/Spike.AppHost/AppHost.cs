@@ -10,7 +10,7 @@ var mailpit = builder.AddMailPit("mailpit");
 
 builder.AddProject<Projects.Spike_Api>("api")
     .WithReference(usersDb)
-    .WithEnvironment("Jwt__SecretKey", builder.AddParameter("jwt-secret-key", new GenerateParameterDefault { MinLength = 44, Special = false }, true, true))
+    .WithEnvironment("Jwt__SecretKey", builder.AddParameter("jwt-secret-key", new GenerateParameterDefault { MinLength = 44, Special = false }, secret: true, persist: true))
     .WithEnvironment("Email__Host", mailpit.Resource.PrimaryEndpoint.Property(EndpointProperty.Host))
     .WithEnvironment("Email__Port", mailpit.Resource.PrimaryEndpoint.Property(EndpointProperty.Port))
     .WaitFor(usersDb)

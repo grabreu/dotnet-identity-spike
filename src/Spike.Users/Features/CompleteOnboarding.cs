@@ -47,7 +47,11 @@ public static class CompleteOnboardingEndpoint
             .WithName("CompleteOnboarding")
             .WithSummary("Complete Onboarding")
             .WithDescription("Completes the onboarding process for the current user.")
-            .Produces(StatusCodes.Status204NoContent);
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
     private static ValueTask<IResult> HandleAsync(CompleteOnboardingRequest request, ClaimsPrincipal principal, ISender sender, CancellationToken cancellationToken)

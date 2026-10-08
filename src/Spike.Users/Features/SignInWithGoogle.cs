@@ -86,7 +86,9 @@ public static class SignInWithGoogleEndpoint
             .WithName("SignInWithGoogle")
             .WithSummary("Sign In with Google")
             .WithDescription("Authenticates a user using a Google ID token.")
-            .Produces<TokenDto>(StatusCodes.Status200OK);
+            .Produces<TokenDto>(StatusCodes.Status200OK)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
     }
 
     private static ValueTask<IResult> HandleAsync(SignInWithGoogleRequest request, ISender sender, CancellationToken cancellationToken)

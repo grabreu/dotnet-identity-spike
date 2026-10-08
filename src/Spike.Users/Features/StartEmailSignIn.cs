@@ -7,7 +7,7 @@ public record StartEmailSignInCommand(string Email) : ICommand<Result>;
 
 public class StartEmailSignInHandler(UserManager<ApplicationUser> userManager, IPublisher publisher) : ICommandHandler<StartEmailSignInCommand, Result>
 {
-    private const string Purpose = "PasswordlessLogin";
+    public const string Purpose = "PasswordlessLogin";
 
     public async ValueTask<Result> Handle(StartEmailSignInCommand command, CancellationToken cancellationToken)
     {
@@ -50,7 +50,8 @@ public static class StartEmailSignInEndpoint
             .WithName("StartEmailSignIn")
             .WithSummary("Start Email Sign-In")
             .WithDescription("Initiates the email sign-in process for a user.")
-            .Produces(StatusCodes.Status204NoContent);
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesValidationProblem();
     }
 
     private static ValueTask<IResult> HandleAsync(StartEmailSignInRequest request, ISender sender, CancellationToken cancellationToken)
