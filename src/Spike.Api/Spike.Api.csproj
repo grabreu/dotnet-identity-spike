@@ -1,10 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <PackageReference Include="Mediator.SourceGenerator">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Desfecho.AspNetCore" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
@@ -15,8 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Spike.ServiceDefaults\Spike.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\Spike.Notifications\Spike.Notifications.csproj" />
-    <ProjectReference Include="..\Spike.Users\Spike.Users.csproj" />
+    <ProjectReference Include="..\Spike.Application\Spike.Application.csproj" />
+    <ProjectReference Include="..\Spike.Infrastructure\Spike.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

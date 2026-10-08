@@ -1,6 +1,0 @@
-namespace Spike.Users.Common;
-
-public interface ITokenService
-{
-    TokenDto GenerateToken(ApplicationUser user);
-}

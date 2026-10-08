@@ -1,8 +1,8 @@
-using Spike.Api.ExceptionHandling;
-using Spike.Api.OpenApi;
-using Spike.Notifications;
+using Spike.Api.Endpoints;
+using Spike.Api.Infrastructure;
+using Spike.Application;
+using Spike.Infrastructure;
 using Spike.ServiceDefaults;
-using Spike.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,13 +18,8 @@ builder.Services.AddOpenApi(options =>
     options.AddOperationTransformer<BearerSecuritySchemeTransformer>();
 });
 
-builder.Services.AddMediator(options =>
-{
-    options.ServiceLifetime = ServiceLifetime.Scoped;
-});
-
-builder.AddUsersModuleServices();
-builder.AddNotificationsModuleServices();
+builder.AddApplicationServices();
+builder.AddInfrastructureServices();
 
 var app = builder.Build();
 
@@ -38,11 +33,12 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-app.MapUsersModuleEndpoints();
+app.MapAuthEndpoints();
+app.MapUsersEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
-    await app.EnsureUsersModuleDatabaseAsync();
+    await app.EnsureDatabaseAsync();
 }
 
 await app.RunAsync();

@@ -1,24 +1,21 @@
 <Solution>
-  <Folder Name="/Notifications Module/">
-    <Project Path="src/Spike.Notifications/Spike.Notifications.csproj" Id="627c3fe1-2283-43db-b930-9b22fba299ff" />
-  </Folder>
-  <Folder Name="/Users Module/">
-    <Project Path="src/Spike.Users.Contracts/Spike.Users.Contracts.csproj" Id="bf2256b7-defa-4d62-924b-ae948b0efdd5" />
-    <Project Path="src/Spike.Users/Spike.Users.csproj" Id="a8797312-d295-4fdc-8903-74b8e78ed2d6" />
-  </Folder>
-  <Folder Name="/_Host/">
-    <Project Path="src/Spike.AppHost/Spike.AppHost.csproj" />
-    <Project Path="src/Spike.ServiceDefaults/Spike.ServiceDefaults.csproj" />
-    <Project Path="src/Spike.Api/Spike.Api.csproj" Id="ae06096c-a898-4e0c-af0d-7dcbef0838e6" />
-  </Folder>
-  <Folder Name="/__Solution Items/">
-    <File Path="global.json" />
-    <File Path="Directory.Build.props" />
-    <File Path="Directory.Packages.props" />
+  <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
     <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
     <File Path="LICENSE" />
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Spike.Api/Spike.Api.csproj" Id="ae06096c-a898-4e0c-af0d-7dcbef0838e6" />
+    <Project Path="src/Spike.AppHost/Spike.AppHost.csproj" />
+    <Project Path="src/Spike.Application/Spike.Application.csproj" />
+    <Project Path="src/Spike.Domain/Spike.Domain.csproj" />
+    <Project Path="src/Spike.Infrastructure/Spike.Infrastructure.csproj" />
+    <Project Path="src/Spike.ServiceDefaults/Spike.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
 </Solution>
