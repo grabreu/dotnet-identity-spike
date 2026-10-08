@@ -1,8 +1,9 @@
-using Spike.Api.Endpoints;
 using Spike.Api.Infrastructure;
-using Spike.Application;
-using Spike.Infrastructure;
+using Spike.Notifications;
 using Spike.ServiceDefaults;
+using Spike.Contracts;
+using Spike.Users;
+using Spike.Users.Behaviors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +19,15 @@ builder.Services.AddOpenApi(options =>
     options.AddOperationTransformer<BearerSecuritySchemeTransformer>();
 });
 
-builder.AddApplicationServices();
-builder.AddInfrastructureServices();
+builder.Services.AddMediator(options =>
+{
+    options.ServiceLifetime = ServiceLifetime.Scoped;
+    options.Assemblies = [typeof(UsersModule), typeof(NotificationsModule), typeof(EmailSignInStartedEvent)];
+    options.PipelineBehaviors = [typeof(ValidationBehavior<,>)];
+});
+
+builder.AddUsersModule();
+builder.AddNotificationsModule();
 
 var app = builder.Build();
 
@@ -33,12 +41,11 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-app.MapAuthEndpoints();
 app.MapUsersEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
-    await app.EnsureDatabaseAsync();
+    await app.EnsureUsersDatabaseAsync();
 }
 
 await app.RunAsync();

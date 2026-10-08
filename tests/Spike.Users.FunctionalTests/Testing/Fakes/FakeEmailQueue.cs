@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using Spike.Notifications.Email;
 
-namespace Spike.Api.AcceptanceTests.Testing.Fakes;
+namespace Spike.Users.FunctionalTests.Testing.Fakes;
 
 public partial class FakeEmailQueue : IEmailQueue
 {

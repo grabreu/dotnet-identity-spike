@@ -1,5 +1,5 @@
 using System.Net.Http.Headers;
-using Spike.Application.Common.Identity;
+using Spike.Users.Identity;
 
 namespace Spike.Api.AcceptanceTests.Testing;
 

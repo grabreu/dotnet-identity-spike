@@ -4,8 +4,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Respawn;
-using Spike.Application.Common.Email;
-using Spike.Application.Common.Identity;
+using Spike.Notifications.Email;
+using Spike.Users.Identity;
 using Testcontainers.MsSql;
 
 namespace Spike.Api.AcceptanceTests.Testing;

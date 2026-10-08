@@ -1,4 +1,4 @@
-using Spike.Application.Common.Identity;
+using Spike.Users.Identity;
 
 namespace Spike.Api.AcceptanceTests.Auth;
 

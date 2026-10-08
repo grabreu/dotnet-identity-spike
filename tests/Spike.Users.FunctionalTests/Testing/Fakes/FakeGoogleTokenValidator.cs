@@ -1,6 +1,6 @@
 using Spike.Users.Identity;
 
-namespace Spike.Api.AcceptanceTests.Testing.Fakes;
+namespace Spike.Users.FunctionalTests.Testing.Fakes;
 
 public class FakeGoogleTokenValidator : IGoogleTokenValidator
 {

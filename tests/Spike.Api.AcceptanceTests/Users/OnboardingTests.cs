@@ -1,4 +1,4 @@
-using Spike.Application.Users.Queries.GetCurrentUser;
+using Spike.Users.Queries.GetCurrentUser;
 
 namespace Spike.Api.AcceptanceTests.Users;
 

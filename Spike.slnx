@@ -12,16 +12,13 @@
   <Folder Name="/src/">
     <Project Path="src/Spike.Api/Spike.Api.csproj" Id="ae06096c-a898-4e0c-af0d-7dcbef0838e6" />
     <Project Path="src/Spike.AppHost/Spike.AppHost.csproj" />
-    <Project Path="src/Spike.Application/Spike.Application.csproj" />
-    <Project Path="src/Spike.Domain/Spike.Domain.csproj" />
-    <Project Path="src/Spike.Infrastructure/Spike.Infrastructure.csproj" />
+    <Project Path="src/Spike.Contracts/Spike.Contracts.csproj" />
+    <Project Path="src/Spike.Notifications/Spike.Notifications.csproj" />
     <Project Path="src/Spike.ServiceDefaults/Spike.ServiceDefaults.csproj" />
+    <Project Path="src/Spike.Users/Spike.Users.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Spike.Api.AcceptanceTests/Spike.Api.AcceptanceTests.csproj" Id="0689b246-1a2f-443c-a95c-21e579535738" />
-    <Project Path="tests/Spike.Application.FunctionalTests/Spike.Application.FunctionalTests.csproj" Id="8fc1275d-2da6-49a1-924c-5733a53f6ee7" />
-    <Project Path="tests/Spike.Application.UnitTests/Spike.Application.UnitTests.csproj" Id="321b881e-7ae0-49c8-bf4d-addb2ff2d821" />
-    <Project Path="tests/Spike.Domain.UnitTests/Spike.Domain.UnitTests.csproj" Id="82bcf689-623e-4d16-a137-1a4af3fef781" />
-    <Project Path="tests/Spike.Infrastructure.IntegrationTests/Spike.Infrastructure.IntegrationTests.csproj" Id="9b43186a-3172-4ba4-bcf2-0d81798a07c0" />
+    <Project Path="tests/Spike.Users.FunctionalTests/Spike.Users.FunctionalTests.csproj" Id="8fc1275d-2da6-49a1-924c-5733a53f6ee7" />
   </Folder>
 </Solution>
